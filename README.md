@@ -24,14 +24,41 @@ user1.save(function() {
         });
     });
 });
+```
 
+### documents
+
+`mongoose-deleted` utilizes mongoose middleware to transparently modify queries to select for documents that are not `{ deleted: true }`. Documents that are `.delete()`-ed will not be returned. To explicitly return documents that are deleted:
+
+```javascript
+schema.find({ deleted: true }, function(err, docs) {
+    // ...
+});
+```
+
+Additionally, the `deleted` boolean property is set by default to not be selected/returned on a document.
+
+To have `deleted` normally returned:
+
+```javascript
+schema.plugin(mongoose_deleted, { select : true });
+```
+
+Or, to retrieve the `deleted` property only on a particular query, manually select for it:
+
+```javascript
+schema.findOne({}, { deleted : 1 }, function(err, doc) {
+    console.log(doc.deleted);
+});
 ```
 
 
-`mongoose-deleted` allows an optional integration with [`mongoose-history-log`](https://www.npmjs.com/package/mongoose-history-log) by passing in a second parameter:
+### history
 
-```javascriptgs
-mongoose_deleted(schema, { history: true })
+`mongoose-deleted` allows an optional integration with [`mongoose-history-log`](https://www.npmjs.com/package/mongoose-history-log) by passing in the options:
+
+```javascript
+mongoose_deleted(schema, { history: true });
 ```
 
 This will automatically insert a `{ status: 'deleted' }` object with the current time.
