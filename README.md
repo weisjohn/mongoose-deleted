@@ -8,11 +8,10 @@ a soft-delete implementation utilizing mongoose middleware
 var mongoose = require('mongoose');
 var mongoose_deleted = require('mongoose-deleted');
 var user = new mongoose.Schema({ name: String });
-user = mongoose.model('user', user);
 mongoose_deleted(user);
+user = mongoose.model('user', user);
 
 var name = "John Q Public";
-
 var user1 = new user({ name : name });
 
 user1.save(function() {
