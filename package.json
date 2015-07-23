@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/weisjohn/mongoose-deleted/issues"
   },
-  "homepage": "https://github.com/weisjohn/mongoose-deleted#readme"
+  "homepage": "https://github.com/weisjohn/mongoose-deleted#readme",
+  "devDependencies": {
+    "mongoose": "^4.0.8"
+  }
 }
