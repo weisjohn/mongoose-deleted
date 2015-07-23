@@ -1,0 +1,27 @@
+{
+  "name": "mongoose-deleted",
+  "version": "1.0.0",
+  "description": "a soft-delete implementation utilizing mongoose middleware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weisjohn/mongoose-deleted.git"
+  },
+  "keywords": [
+    "mongoose",
+    "soft-delete",
+    "deleted",
+    "delete",
+    "soft",
+    "plugins"
+  ],
+  "author": "John Weis <weis.john@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/weisjohn/mongoose-deleted/issues"
+  },
+  "homepage": "https://github.com/weisjohn/mongoose-deleted#readme"
+}
