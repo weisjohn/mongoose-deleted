@@ -1,35 +1,76 @@
-var assert = require('assert');
 var async = require('async');
+var assert = require('assert');
 var mongoose = require('mongoose');
 var mongoose_deleted = require('./');
 
-var user;
+var user, cars;
 
 function models() {
+
     user = new mongoose.Schema({ name: String });
     mongoose_deleted(user);
-    mongoose.model('user', user);
     user = mongoose.model('user', user);
+
+    car = new mongoose.Schema({ name: String });
+    mongoose_deleted(car, { select : true });
+    car = mongoose.model('car', car);
+
 }
 
 function test() {
 
     var name = "John Q Public";
-    var user1 = new user({ name : name });
 
-    user1.save(function(err, doc) {
-        user.findOne({ name : name }, function(err, doc) {
-            assert.equal(err, null);
-            assert.equal(doc.name, name);
-            doc.delete(function(err) {
-                user.findOne({ name: name }, function(err, docs) {
-                    assert.equal(err, null);
-                    assert.equal(docs, null);
-                    disco();
-                });
+    async.waterfall([
+        function(cb) {
+            user.remove({}, function(err) { cb(err); });
+        },
+        function(cb) {
+            car.remove({}, function(err) { cb(err); });
+        },
+        function(cb) {
+            var user1 = new user({ name : name });
+            user1.save(function(err, doc) { cb(err); });
+        },
+        function(cb) {
+            user.findOne({ name : name }, function(err, doc) {
+                assert.equal(err, null);
+                assert.equal(doc.name, name);
+                assert.equal(doc.deleted, null, 'deleted should not exist');
+                cb(null, doc);
             });
-        });
-    });
+        },
+        function(doc, cb) {
+            user.findOne({ name : name }, { name : 1, deleted : 1 }, function(err, doc) {
+                assert.equal(err, null);
+                assert.equal(doc.name, name);
+                assert.equal(doc.deleted, false, 'deleted should exist');
+                cb(null, doc);
+            });
+        },
+        function(doc, cb) {
+            doc.delete(function(err) {
+                cb(err);
+            });
+        },
+        function(cb) {
+            user.findOne({ name: name }, function(err, doc) {
+                assert.equal(err, null);
+                assert.equal(doc, null);
+                cb();
+            });
+        },
+        function(cb) {
+            var car1 = new car({ name : "Jetta" });
+            car1.save(function(err, doc) { cb(err); });
+        },
+        function(cb) {
+            car.findOne({ name : "Jetta" }, function(err, doc) {
+                assert.equal(doc.deleted, false, 'deleted should exist');
+                cb();
+            });
+        }
+    ], disco);
 
 }
 
