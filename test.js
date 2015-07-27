@@ -61,6 +61,35 @@ function test() {
             });
         },
         function(cb) {
+            user.findOne({ name: name, deleted: true }, function(err, doc) {
+                assert.equal(err, null);
+                assert.equal(doc.name, name, 'doc should exist');
+                cb();
+            });
+        },
+        function(cb) {
+            user.findOne({ name: name, $or : [
+                { deleted : { $exists: true } },
+                { deleted : { $exists: false } },
+            ] }, function(err, doc) {
+                assert.equal(err, null);
+                assert.equal(doc.name, name, 'doc should exist');
+                cb();
+            });
+        },
+        function(cb) {
+            user.count(function(err, number) {
+                assert.equal(number, 0, 'users.count() should equal 0');
+                cb();
+            });
+        },
+        function(cb) {
+            user.count({ deleted : true },function(err, number) {
+                assert.equal(number, 1, 'deleted users should be 1');
+                cb();
+            });
+        },
+        function(cb) {
             var car1 = new car({ name : "Jetta" });
             car1.save(function(err, doc) { cb(err); });
         },
