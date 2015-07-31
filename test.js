@@ -2,6 +2,7 @@ var async = require('async');
 var assert = require('assert');
 var mongoose = require('mongoose');
 var mongoose_deleted = require('./');
+var _ = require('lodash');
 
 var user, cars;
 
@@ -12,7 +13,7 @@ function models() {
     user = mongoose.model('user', user);
 
     car = new mongoose.Schema({ name: String });
-    mongoose_deleted(car, { select : true });
+    mongoose_deleted(car, { select : true, toJSON : true });
     car = mongoose.model('car', car);
 
 }
@@ -30,7 +31,11 @@ function test() {
         },
         function(cb) {
             var user1 = new user({ name : name });
-            user1.save(function(err, doc) { cb(err); });
+            user1.save(function(err, doc) {
+                assert.equal(doc.deleted, false, 'deleted should exist');
+                assert.equal(doc.toJSON().deleted, null, 'deleted JSON should exist');
+                cb(err);
+            });
         },
         function(cb) {
             user.findOne({ name : name }, function(err, doc) {
@@ -45,6 +50,8 @@ function test() {
                 assert.equal(err, null);
                 assert.equal(doc.name, name);
                 assert.equal(doc.deleted, false, 'deleted should exist');
+                assert.equal(doc.toJSON().deleted, null, 'deleted JSON should not exist');
+                assert.equal(doc.toJSON({ deleted : true }).deleted, false, 'deleted JSON should exist');
                 cb(null, doc);
             });
         },
@@ -96,6 +103,8 @@ function test() {
         function(cb) {
             car.findOne({ name : "Jetta" }, function(err, doc) {
                 assert.equal(doc.deleted, false, 'deleted should exist');
+                assert.equal(doc.toJSON().deleted, false, 'deleted JSON should exist');
+                assert.equal(doc.toJSON({ deleted : false }).deleted, null, 'deleted JSON should not exist');
                 cb();
             });
         }
