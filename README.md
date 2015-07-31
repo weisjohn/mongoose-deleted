@@ -52,6 +52,20 @@ schema.findOne({}, { deleted : 1 }, function(err, doc) {
 });
 ```
 
+### toJSON
+
+By default, `mongoose-deleted` hides the `deleted` property on `doc.toJSON()`. This is configurable in the options:
+
+```javascript
+schema.plugin(mongoose_deleted, { toJSON : true });
+```
+
+This can be overriden in a `toJSON()` call:
+
+```javascript
+var json = doc.toJSON({ deleted : true });
+```
+
 
 ### history
 
