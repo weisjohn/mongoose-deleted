@@ -3,7 +3,7 @@ module.exports = function(schema, options) {
 
     // default options
     if (typeof options !== "object")
-        options = { select : false, history : false };
+        options = { select : false, history : false, toJSON : false };
 
     // add the schema path
     schema.add({
@@ -30,6 +30,21 @@ module.exports = function(schema, options) {
     schema.pre('findOne', soft_delete_middleware);
     schema.pre('findOneAndUpdate', soft_delete_middleware);
     schema.pre('count', soft_delete_middleware);
+
+    // hide the deleted field on toJSON calls
+    if (!schema.options.toJSON) schema.options.toJSON = {};
+    // store reference to previous transform
+    var fn = schema.options.toJSON.transform || function() { };
+    schema.options.toJSON.transform = function (doc, ret, opts) {
+
+        // allow overrides in the toJSON call
+        var del = options.toJSON;
+        if (typeof opts.deleted !== 'undefined') del = opts.deleted;
+        if (!del) { delete ret.deleted; }
+
+        // call next transform
+        fn(doc, ret, opts);
+    }
 
 }
 
