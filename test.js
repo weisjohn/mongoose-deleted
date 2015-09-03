@@ -56,9 +56,7 @@ function test() {
             });
         },
         function(doc, cb) {
-            doc.delete(function(err) {
-                cb(err);
-            });
+            doc.delete(function(err) { cb(err); });
         },
         function(cb) {
             user.findOne({ name: name }, function(err, doc) {
@@ -105,10 +103,24 @@ function test() {
                 assert.equal(doc.deleted, false, 'deleted should exist');
                 assert.equal(doc.toJSON().deleted, false, 'deleted JSON should exist');
                 assert.equal(doc.toJSON({ deleted : false }).deleted, null, 'deleted JSON should not exist');
-                cb();
+                cb(null, doc);
             });
+        },
+        function(doc, cb) {
+            doc.delete(function(err, doc) { return cb(err, doc); });
+        },
+        function(doc, cb) {
+            assert.equal(doc.deleted, true, 'deleted should be true');
+            doc.restore(function(err, doc) { cb(err, doc); });
+        },
+        function(doc, cb) {
+            assert.equal(doc.deleted, false, 'deleted should be false');
+            cb();
         }
-    ], disco);
+    ], function(err) {
+        assert.equal(err, null);
+        disco();
+    });
 
 }
 

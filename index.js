@@ -14,16 +14,21 @@ module.exports = function(schema, options) {
         }
     });
 
-    // extend the delete function
-    schema.methods['delete'] = function(fn) {
-        this.deleted = true;
+    // generate methods on schema
+    function action(name, bool) {
+        schema.methods[name] = function(fn) {
+            this.deleted = bool;
 
-        // integration with mongoose-history
-        if (options.history && Array.isArray(this.history))
-            this.history.push({ status: 'deleted' });
+            // integration with mongoose-history
+            if (options.history && Array.isArray(this.history))
+                this.history.push({ status: name + 'd' });
 
-        this.save(fn);
-    };
+            this.save(fn);
+        };
+    }
+
+    action('delete', true);
+    action('restore', false);
 
     // allow finds to be simple
     schema.pre('find', soft_delete_middleware);
@@ -44,9 +49,9 @@ module.exports = function(schema, options) {
 
         // call next transform
         fn(doc, ret, opts);
-    }
+    };
 
-}
+};
 
 // detect if a "deleted" key is on the object
 function detect_deleted(obj) {
