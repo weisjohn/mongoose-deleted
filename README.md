@@ -44,6 +44,14 @@ To have `deleted` normally returned:
 schema.plugin(mongoose_deleted, { select : true });
 ```
 
+To have the `deleted` property included, [in addition](http://mongoosejs.com/docs/api.html#query_Query-select) to the normal properties:
+
+```javascript
+schema.findOne(query).select('+deleted').exec(function(err, doc) {
+    console.log(doc.deleted);
+});
+```
+
 Or, to retrieve the `deleted` property only on a particular query, manually select for it:
 
 ```javascript
@@ -51,6 +59,8 @@ schema.findOne({}, { deleted : 1 }, function(err, doc) {
     console.log(doc.deleted);
 });
 ```
+
+
 
 ### toJSON
 
