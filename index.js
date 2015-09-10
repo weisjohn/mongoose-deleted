@@ -55,11 +55,7 @@ module.exports = function(schema, options) {
 
 // detect if a "deleted" key is on the object
 function detect_deleted(obj) {
-    var detected = false;
-    Object.keys(obj).forEach(function(key) {
-        if (key === "deleted") detected = true;
-    });
-    return detected;
+    return Object.keys(obj).indexOf('deleted') !== -1;
 }
 
 // middleware to faciliate soft-delete finds
