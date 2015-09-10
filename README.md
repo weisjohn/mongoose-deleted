@@ -1,8 +1,8 @@
 # mongoose-deleted
 
-a soft-delete implementation utilizing mongoose middleware
+A soft-delete implementation utilizing Mongoose middleware.
 
-### usage
+### Usage
 
 ```javascript
 var mongoose = require('mongoose');
@@ -14,21 +14,21 @@ user = mongoose.model('user', user);
 var name = "John Q Public";
 var user1 = new user({ name : name });
 
-user1.save(function() {
-    user.findOne({ name : name, }, function(err, docs) {
+user1.save(function () {
+    user.findOne({ name : name }, function (err, doc) {
         if (err || !doc) console.log('failed to find document');
-        doc.delete(funciton(err) {
-            user.findOne({ name: name }, function() {
+        doc.delete(function (err) {
+            user.findOne({ name: name }, function () {
                 if (!doc) console.log('soft delete worked');
-            })
+            });
         });
     });
 });
 ```
 
-### documents
+### Documents
 
-`mongoose-deleted` utilizes mongoose middleware to transparently modify queries to select for documents that are not `{ deleted: true }`. Documents that are `.delete()`-ed will not be returned. To explicitly return documents that are deleted:
+`mongoose-deleted` utilizes Mongoose middleware to transparently modify queries to select for documents that are not `{ deleted: true }`. Documents that are `.delete()`-ed will not be returned. To explicitly return documents that are deleted:
 
 ```javascript
 schema.find({ deleted: true }, function(err, docs) {
