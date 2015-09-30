@@ -26,6 +26,7 @@
   "homepage": "https://github.com/weisjohn/mongoose-deleted#readme",
   "devDependencies": {
     "async": "^1.4.0",
+    "lodash": "^3.10.1",
     "mongoose": "^4.0.8"
   }
 }
