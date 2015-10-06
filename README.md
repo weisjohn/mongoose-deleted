@@ -15,7 +15,7 @@ var name = "John Q Public";
 var user1 = new user({ name : name });
 
 user1.save(function() {
-    user.findOne({ name : name }, function(err, docs) {
+    user.findOne({ name : name }, function(err, doc) {
         if (err || !doc) console.log('failed to find document');
         doc.delete(funciton(err) {
             user.findOne({ name: name }, function() {
