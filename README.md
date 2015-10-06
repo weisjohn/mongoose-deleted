@@ -17,7 +17,7 @@ var user1 = new user({ name : name });
 user1.save(function() {
     user.findOne({ name : name }, function(err, doc) {
         if (err || !doc) console.log('failed to find document');
-        doc.delete(funciton(err) {
+        doc.delete(function(err) {
             user.findOne({ name: name }, function() {
                 if (!doc) console.log('soft delete worked');
             })
