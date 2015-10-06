@@ -1,6 +1,6 @@
 {
   "name": "mongoose-deleted",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "a soft-delete implementation utilizing mongoose middleware",
   "main": "index.js",
   "scripts": {
