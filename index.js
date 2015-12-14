@@ -53,9 +53,10 @@ module.exports = function(schema, options) {
 
 };
 
-// detect if a "deleted" key is on the object
-function detect_deleted(obj) {
-    return Object.keys(obj).indexOf('deleted') !== -1;
+// detect `deleted` or `_id` conditions
+function detect(obj) {
+    var keys = Object.keys(obj);
+    return keys.indexOf('deleted') !== -1 || keys.indexOf('_id') !== -1;
 }
 
 // middleware to faciliate soft-delete finds
@@ -63,14 +64,13 @@ function soft_delete_middleware(next) {
 
     var cons = this._conditions, add_clause = true;
 
-    // if the supplied query has specified any type of deleted, don't add
-    if (detect_deleted(cons)) {
+    if (detect(cons)) {
         add_clause = false;
     } else {
         ["$or", "$and"].forEach(function(key) {
             if (!cons[key] || !Array.isArray(cons[key])) return;
             cons[key].forEach(function(con) {
-                if (detect_deleted(con)) add_clause = false;
+                if (detect(con)) add_clause = false;
             });
         });
     }
